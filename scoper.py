@@ -1,25 +1,25 @@
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
+import tkinter as tk
+from tkinter import filedialog
 
 
 class Scoper:
+    _version = '2.0'
+    root = tk.Tk()
+    root.withdraw()
+
     def __init__(self):
         """Setup"""
         self.all_data = pd.DataFrame()
         self.data = pd.DataFrame()
         self.path = os.getcwd()
         self.files = os.listdir(self.path)
-        self.files_csv = [f for f in self.files if f[-3:] == 'CSV']
+        self.file_path = str()
 
     def setup_all_data(self):
-        for file in self.files_csv:
-            with open(file) as fin, open('temp.csv', 'w') as fout:
-                for line in fin.readlines()[4:]:  # remove the first 5 lines
-                    fout.write(line)
-
-        self.all_data = pd.read_csv('temp.csv')
-        os.remove('temp.csv')
+        self.all_data = pd.read_csv(filedialog.askopenfilename(), skiprows=5)
 
     def setup_data(self):
         self.all_data.rename(columns={self.all_data.columns[0]: "Record"}, inplace=True)
